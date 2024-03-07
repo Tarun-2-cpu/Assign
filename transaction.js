@@ -1,22 +1,16 @@
 $(document).ready(function() {
     var apiUrl = "https://cl-backend.kryptocoder.com/api/";
     
-    
-    if (window.location.pathname.endsWith('.html')) {
-        var newURL = window.location.pathname.replace('.html', '');
-        window.history.replaceState({}, document.title, newURL);
-    }
-
     function isLoggedIn(){
         return sessionStorage.getItem('memberData') !== null;
     }
     
-    if(!isLoggedIn() && window.location.pathname === '/transaction'){
-        window.location.href = '/index.html';
+    if(!isLoggedIn() && window.location.pathname === 'transaction.html'){
+        window.location.href = 'index.html';
     }
 
 
-    $('.sign-in-member').click(function(event) {
+    $('.sign-in-member').click(function(event){
         event.preventDefault();
         updateMember();
     });
@@ -64,7 +58,7 @@ $(document).ready(function() {
 
     function logout(){
         sessionStorage.removeItem('memberData');
-        window.location.href = '/index.html';
+        window.location.href = 'index.html';
     }
 
 
@@ -84,7 +78,8 @@ $(document).ready(function() {
         console.log(pointsAllocated);
 
          let transactionData = memberData.earnPointsResult;
-         
+         console.log(transactionData);
+
          let transactionHtmlContent = '<table>';
          
          for (let i = 0; i < transactionData.length; i++) {
@@ -107,6 +102,7 @@ $(document).ready(function() {
 
          if (memberData && memberData.usePointsResults && memberData.usePointsResults.length > 0) {
              let redeemData = memberData.usePointsResults;
+             console.log(redeemData);
              let redeemHtmlContent = '<table>';
          
              for (let i = 0; i < redeemData.length; i++){

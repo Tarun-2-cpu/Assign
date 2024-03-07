@@ -3,17 +3,12 @@ $(document).ready(function() {
     var apiUrl = "https://cl-backend.kryptocoder.com/api/";
 
     
-    if (window.location.pathname.endsWith('.html')) {
-        var newURL = window.location.pathname.replace('.html', '');
-        window.history.replaceState({}, document.title, newURL);
-    }
-
     function isLoggedIn(){
         return sessionStorage.getItem('partnerData') !== null ;
     }
 
-    if(!isLoggedIn() && window.location.pathname === '/Transactions'){
-        window.location.href = '/partner.html';
+    if(!isLoggedIn() && window.location.pathname === 'Transactions.html'){
+        window.location.href = 'partner.html';
     }
 
 
@@ -51,10 +46,10 @@ $(document).ready(function() {
                     alert(error);
                 } else {
                     sessionStorage.setItem('partnerData', JSON.stringify(data));
-                    window.location.href = "/Transactions";
+                    window.location.href = "Transactions.html";
                 }
             },
-            error: function(jqXHR, textStatus, errorThrown) {
+            error: function(jqXHR, textStatus, errorThrown){
                 alert("Error: Try again");
                 console.log(errorThrown);
                 console.log(textStatus);

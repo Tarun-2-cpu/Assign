@@ -2,18 +2,12 @@ $(document).ready(function() {
     
     var apiUrl = "https://cl-backend.kryptocoder.com/api/";
 
-    
-    if (window.location.pathname.endsWith('.html')) {
-        var newURL = window.location.pathname.replace('.html', '');
-        window.history.replaceState({}, document.title, newURL);
-    }
-
     function isLoggedIn(){
         return sessionStorage.getItem('partnerData') !== null ;
     }
 
-    if(!isLoggedIn() && window.location.pathname === '/partner-dashboard'){
-        window.location.href = '/partner.html';
+    if(!isLoggedIn() && window.location.pathname === 'partner-dashboard.html'){
+        window.location.href = 'partner.html';
     }
 
 
@@ -52,7 +46,7 @@ $(document).ready(function() {
                     localStorage.setItem('partner-id', JSON.stringify(formPartnerId));
                     localStorage.setItem('card-id', JSON.stringify(formCardId));
                     sessionStorage.setItem('partnerData', JSON.stringify(data));
-                    window.location.href = "/partner-dashboard.html";
+                    window.location.href = "partner-dashboard.html";
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -71,7 +65,7 @@ $(document).ready(function() {
 
     function logout(){
         sessionStorage.removeItem('partnerData');
-        window.location.href = '/partner.html';
+        window.location.href = 'partner.html';
     }
 
     var partnerData = JSON.parse(sessionStorage.getItem('partnerData'));

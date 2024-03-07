@@ -1,20 +1,14 @@
 $(document).ready(function() {
     var apiUrl = "https://cl-backend.kryptocoder.com/api/";
 
-    // Remove '.html' extension from URL
-    if (window.location.pathname.endsWith('.html')) {
-        var newURL = window.location.pathname.replace('.html', '');
-        window.history.replaceState({}, document.title, newURL);
-    }
-
     // Function to check if partner is logged in
     function isLoggedIn() {
         return sessionStorage.getItem('partnerData') !== null;
     }
 
     // Redirect to login page if not logged in
-    if (!isLoggedIn() && window.location.pathname === '/addOffer') {
-        window.location.href = '/partner.html';
+    if (!isLoggedIn() && window.location.pathname === 'addOffer.html'){
+        window.location.href = 'partner.html';
     }
 
     // Sign In button click event
@@ -72,7 +66,7 @@ $(document).ready(function() {
     // Function to log out
     function logout() {
         sessionStorage.removeItem('partnerData');
-        window.location.href = '/partner.html';
+        window.location.href = 'partner.html';
     }
 
     // Retrieve partner ID and card ID from local storage
@@ -125,6 +119,9 @@ $(document).ready(function() {
                     $('.offerModal').css("display", "none");
                     updatePartner();
                     // window.location.href = "addOffer.html";
+                    $('#offerproduct').val('');
+                    $('#offerprice').val('');
+                    $('#offerpoints').val('');
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {

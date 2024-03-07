@@ -1,22 +1,16 @@
 $(document).ready(function() {
     var apiUrl = "https://cl-backend.kryptocoder.com/api/";
 
-    
-    if (window.location.pathname.endsWith('.html')) {
-        var newURL = window.location.pathname.replace('.html', '');
-        window.history.replaceState({}, document.title, newURL);
-    }
-
     function isLoggedIn(){
         return sessionStorage.getItem('memberData') !== null;
     }
     
-    if(!isLoggedIn() && window.location.pathname === '/reedem'){
-        window.location.href = '/index.html';
+    if(!isLoggedIn() && window.location.pathname === 'reedem.html'){
+        window.location.href = 'index.html';
     }
 
 
-    $('.sign-in-member').click(function(event) {
+    $('.sign-in-member').click(function(event){
         event.preventDefault();
         updateMember();
     });
@@ -44,7 +38,7 @@ $(document).ready(function() {
                     localStorage.setItem('cardId', JSON.stringify(formCardId));
                     sessionStorage.setItem('memberData', JSON.stringify(data));
                     updatePoints(data.points);
-                    window.location.href = "/member-dashboard.html";
+                    window.location.href = "member-dashboard.html";
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -64,7 +58,7 @@ $(document).ready(function() {
     
     function logout(){
         sessionStorage.removeItem('memberData');
-        window.location.href = '/index.html';
+        window.location.href = 'index.html';
     }
 
 
@@ -133,7 +127,7 @@ $(document).ready(function() {
 
     let cardId = JSON.parse(localStorage.getItem('cardId'));
     console.log(cardId);
-
+//
     $('.use-partner select').on('change', function(e) {
         e.preventDefault();
         var partnerid = $(this).find(':selected').attr('partner-id');
@@ -168,17 +162,17 @@ $(document).ready(function() {
         });
     });
 
-    $('.redeemloyalty').on('change', '#transactionDropdown', function(e) {
-        e.preventDefault();
-        var formPoints = $(this).val();
-        usePoints(formPoints);
-    });
+        $('.redeemloyalty').on('change', '#transactionDropdown', function(e) {
+            e.preventDefault();
+            var formPoints = $(this).val();
+            usePoints(formPoints);
+        });
 
-    $('.use-points-transaction').click(function(e) {
-        e.preventDefault();
-        var formPoints = $('.usePoints input').val();
-        usePoints(formPoints);
-    });
+        $('.use-points-transaction').click(function(e) {
+            e.preventDefault();
+            var formPoints = $('.usePoints input').val();
+            usePoints(formPoints);
+        });
 
     function usePoints(formPoints) {
         var accountNumber = JSON.parse(localStorage.getItem('accountNumber'));
@@ -189,6 +183,14 @@ $(document).ready(function() {
             alert("Select partner first");
             return;
         }
+
+        formPoints = parseFloat(formPoints);
+
+        if(!isNaN(formPoints) || formPoints <= 0){
+            alert("Enter a valid number of points");
+            return;
+        }
+            
 
         var inputData = JSON.stringify({
             "accountnumber": accountNumber,
@@ -222,7 +224,7 @@ $(document).ready(function() {
                     var redeemedPoints = parseInt(formPoints);
                     var newPoints = currentPoints - redeemedPoints;
                     updatePoints(newPoints);
-                    $('.use-partner select').val(''); 
+                    $('.use-partner select').val('');
                     $('.usePoints input').val('');
                     $('.redeemloyalty').html('');
                     let loader = document.querySelector('.loader');
@@ -231,11 +233,187 @@ $(document).ready(function() {
                 }
             },
             error: function(jqXHR, textStatus, errorThrown){
+                
                 alert("Error: Try again")
                 console.log(errorThrown);
                 console.log(textStatus);
                 console.log(jqXHR);
             }
         });
-    }
+    };
 });
+
+
+// $(document).ready(function() {
+//     var apiUrl = "https://cl-backend.kryptocoder.com/api/";
+
+//     function isLoggedIn() {
+//         return sessionStorage.getItem('memberData') !== null;
+//     }
+
+//     function updateMember() {
+//         var formAccountNum = $('.account-number input').val();
+//         var formCardId = $('.card-id input').val();
+
+//         var inputData = JSON.stringify({
+//             "accountnumber": formAccountNum,
+//             "cardid": formCardId
+//         });
+
+//         $.ajax({
+//             type: 'POST',
+//             url: apiUrl + 'memberData',
+//             data: inputData,
+//             dataType: 'json',
+//             contentType: 'application/json',
+//             success: function(data) {
+//                 if (data.error) {
+//                     // Handle error
+//                 } else {
+//                     localStorage.setItem('accountNumber', JSON.stringify(formAccountNum));
+//                     localStorage.setItem('cardId', JSON.stringify(formCardId));
+//                     sessionStorage.setItem('memberData', JSON.stringify(data));
+//                     updatePoints(data.points);
+//                     // Redirect to appropriate page based on current location
+//                     if (window.location.pathname === '/member-dashboard.html') {
+//                         window.location.href = "member-dashboard.html";
+//                     } else if (window.location.pathname === '/reedem.html') {
+//                         window.location.href = "reedem.html";
+//                     } else {
+//                         window.location.href = "index.html";
+//                     }
+//                 }
+//             },
+//             error: function(jqXHR, textStatus, errorThrown) {
+//                 alert("Error: Try again");
+//                 console.log(errorThrown);
+//                 console.log(textStatus);
+//                 console.log(jqXHR);
+//             }
+//         });
+//     }
+
+//     function logout() {
+//         sessionStorage.removeItem('memberData');
+//         window.location.href = 'index.html';
+//     }
+
+//     function updatePoints(points) {
+//         var pointsElement = document.querySelector('.heading h2:nth-child(3)');
+//         if (pointsElement) {
+//             pointsElement.innerHTML = points;
+//         }
+
+//         var memberData = JSON.parse(sessionStorage.getItem('memberData'));
+//         if (memberData) {
+//             memberData.points = points;
+//             sessionStorage.setItem('memberData', JSON.stringify(memberData));
+//         }
+//     }
+
+//     function earnPoints(formPoints, formPartnerId) {
+//         var accountNumber = JSON.parse(localStorage.getItem('accountNumber'));
+//         var cardId = JSON.parse(localStorage.getItem('cardId'));
+
+//         var inputData = JSON.stringify({
+//             "accountnumber": accountNumber,
+//             "cardid": cardId,
+//             "points": formPoints,
+//             "partnerid": formPartnerId
+//         });
+
+//         $.ajax({
+//             type: 'POST',
+//             url: apiUrl + 'earnPoints',
+//             data: inputData,
+//             dataType: 'json',
+//             contentType: 'application/json',
+//             success: function(data) {
+//                 updateMember();
+//                 alert('Points earned successfully');
+//             },
+//             error: function(jqXHR, textStatus, errorThrown) {
+//                 alert("Error: Try again");
+//                 console.log(errorThrown);
+//                 console.log(textStatus);
+//                 console.log(jqXHR);
+//             }
+//         });
+//     }
+
+//     function usePoints(formPoints, formPartnerId) {
+//         var accountNumber = JSON.parse(localStorage.getItem('accountNumber'));
+//         var cardId = JSON.parse(localStorage.getItem('cardId'));
+
+//         var inputData = JSON.stringify({
+//             "accountnumber": accountNumber,
+//             "cardid": cardId,
+//             "points": formPoints,
+//             "partnerid": formPartnerId
+//         });
+
+//         $.ajax({
+//             type: 'POST',
+//             url: apiUrl + 'usePoints',
+//             data: inputData,
+//             dataType: 'json',
+//             contentType: 'application/json',
+//             success: function(data) {
+//                 updateMember();
+//                 alert('Points redeemed successfully');
+//             },
+//             error: function(jqXHR, textStatus, errorThrown) {
+//                 alert("Error: Try again");
+//                 console.log(errorThrown);
+//                 console.log(textStatus);
+//                 console.log(jqXHR);
+//             }
+//         });
+//     }
+
+//     $('.sign-in-member').click(function(event) {
+//         event.preventDefault();
+//         updateMember();
+//     });
+
+//     $('.log-out').click(function(event) {
+//         event.preventDefault();
+//         logout();
+//     });
+
+//     $('.earn-points-transaction').click(function(e) {
+//         e.preventDefault();
+//         var formPoints = $('.earnPoints input').val();
+//         var formPartnerId = $('.earn-partner select').find(":selected").attr('partner-id');
+//         earnPoints(formPoints, formPartnerId);
+//     });
+
+//     $('.use-points-transaction').click(function(e) {
+//         e.preventDefault();
+//         var formPoints = $('.usePoints input').val();
+//         var formPartnerId = $('.use-partner select').find(":selected").attr('partner-id');
+//         usePoints(formPoints, formPartnerId);
+//     });
+
+//     // Retrieve member data from session storage
+//     var memberData = JSON.parse(sessionStorage.getItem('memberData'));
+//     if (memberData) {
+//         console.log(memberData);
+//         let nameElement = document.querySelector('.heading h2:nth-child(1)');
+//         let accountNumberElement = document.querySelector('.heading h2:nth-child(2)');
+//         let pointsElement = document.querySelector('.heading h2:nth-child(3)');
+
+//         nameElement.innerHTML = memberData.firstName + ' ' + memberData.lastName;
+//         accountNumberElement.innerHTML = memberData.accountNumber;
+//         pointsElement.innerHTML = memberData.points;
+
+//         let partnerData = memberData.partnersData;
+
+//         // Populate partner dropdowns
+//         $('.earn-partner select, .use-partner select').html('<option value="" disabled="" selected="">select</option>');
+//         for (var i = 0; i < partnerData.length; i++) {
+//             $('.earn-partner select').append('<option partner-id="' + partnerData[i].id + '">' + partnerData[i].name + '</option>');
+//             $('.use-partner select').append('<option partner-id="' + partnerData[i].id + '">' + partnerData[i].name + '</option>');
+//         }
+//     }
+// });
