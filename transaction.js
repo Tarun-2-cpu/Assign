@@ -15,7 +15,7 @@ $(document).ready(function() {
         updateMember();
     });
   
-    function updateMember() {
+    function updateMember(){
         var formAccountNum = $('.account-number input').val();
         var formCardId = $('.card-id input').val();
   
@@ -62,7 +62,6 @@ $(document).ready(function() {
     }
 
 
-    // Retrieve member data from session storage
     var memberData = JSON.parse(sessionStorage.getItem('memberData'));
     if (memberData) {
         console.log(memberData);

@@ -243,6 +243,7 @@
 //     };
 // });
 
+
 $(document).ready(function() {
     var apiUrl = "https://cl-backend.kryptocoder.com/api/";
 
@@ -340,6 +341,7 @@ $(document).ready(function() {
 
     // Retrieve member data from session storage
     var memberData = JSON.parse(sessionStorage.getItem('memberData'));
+
     if (memberData) {
         console.log(memberData);
         let nameElement = document.querySelector('.heading h2:nth-child(1)');
@@ -355,8 +357,7 @@ $(document).ready(function() {
     console.log(partnerData);
 
     let partnerDropdown = document.querySelector('.use-partner select');
-    console.log(partnerDropdown);
-
+    
     partnerDropdown.innerHTML = '<option value="" disabled="" selected="">select</option>';
     for (var i = 0; i < partnerData.length; i++) {
         partnerDropdown.innerHTML += '<option partner-id=' + partnerData[i].id + '> ' + partnerData[i].name + '</option>';
@@ -393,45 +394,82 @@ $(document).ready(function() {
         });
     }
 
-    let card = $('.reedem-history-card');
-    console.log(card);
+    addTransactionCardsFromLocalStorage();
 
-    function addTransactionCard(transactionData){
-        var reedemCards = JSON.parse(localStorage.getItem('reedemCards')) || [];
-        if (reedemCards.length >= 10) {
-            reedemCards.shift();
+
+    function addTransactionCard(transactionData) {
+        var transactionCards = getTransactionCardsFromLocalStorage();
+    
+        // Check for duplicates
+        var isDuplicate = transactionCards.some(function(card) {
+            return card.points === transactionData.points && card.timestamp === transactionData.timestamp;
+        });
+    
+        // If it's a duplicate, return
+        if (isDuplicate) {
+            return;
         }
-        reedemCards.push(transactionData); 
-        localStorage.setItem('reedemCards', JSON.stringify(reedemCards));
-        $('.profile-header').css('display', 'block');
-        var newCardHTML = `
-            <div class="clearfix w_social3 reedem-card new-card">
-                <div class="">
-                    <div class="card google-widget">
-                        <div class="icon">  
-                            <i class="fa fa-money"></i>
-                        </div>
-                        <div class="content">
-                            <div class="text">Points Reedemed</div>
+    
+        // Add the new card to the end of the list
+        transactionCards.push(transactionData);
+    
+        // Remove any existing cards from the UI
+        $('.reedem-history-card .body').empty();
+    
+        // Add the last 5 cards to the UI
+        var startIndex = Math.max(0, transactionCards.length - 4);
+        for (var i = startIndex; i < transactionCards.length; i++) {
+            var cardData = transactionCards[i];
+            
+            var transactionIDShort = cardData.transactionID.substring(0, 10) + "...";
+
+                var timestamp = cardData.timestamp;
+                var dateTimeParts = timestamp.split(" "); // Splitting timestamp into date and time parts
+
+                var newCardHTML = `
+                    <div class="clearfix w_social3 reedem-card">
+                        <div class="">
+                            <div class="card twitter-widget">
+                                <div class="icon">  
+                                </div>
+                                <div class="content">
+                                    <div class="text"><b>${cardData.points} </b> Points </div><br/>
+                                    <div class="text">${transactionIDShort}</div><br/>
+                                    <div class="text">
+                                        <b>${dateTimeParts[1]}</b> <!-- Time -->
+                                        <br>
+                                        ${dateTimeParts[0]} <!-- Date -->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        `;
-        var $newCard = $(newCardHTML);
-        $newCard.data('transaction-data', transactionData);
-        $('.reedem-history-card .body').prepend($newCard);
-        
-        $newCard.click(function () {
-            var transactionData = $(this).data('transaction-data');
-            showTransactionDetail(transactionData);
-        });
-        setTimeout(function () {
-            $('.reedem-card.new-card').removeClass('new-card');
-        }, 3000);
+                `;
+
+            var $newCard = $(newCardHTML);
+            $newCard.data('transaction-data', cardData);
+            $('.reedem-history-card .body').append($newCard);
+    
+            if (i === transactionCards.length - 1) {
+                // Add animation class to the newly added card
+                $newCard.addClass('new-card');
+    
+                // After a delay, remove the animation class
+                setTimeout(function() {
+                    $newCard.removeClass('new-card');
+                }, 2000); 
+            }
+    
+            $newCard.click(function () {
+                var transactionData = $(this).data('transaction-data');
+                showTransactionDetail(transactionData);
+            });
+        }
+        saveTransactionCardsToLocalStorage(transactionCards);
     }
 
-    addTransactionCardsFromLocalStorage();
+
+    
 
 
     function showTransactionDetail(transactionData) {
@@ -486,17 +524,17 @@ $(document).ready(function() {
         });
     });
 
-        $('.redeemloyalty').on('change', '#transactionDropdown', function(e) {
-            e.preventDefault();
-            var formPoints = $(this).val();
-            usePoints(formPoints);
-        });
+    $('.redeemloyalty').on('change', '#transactionDropdown', function(e) {
+        e.preventDefault();
+        var formPoints = $(this).val();
+        usePoints(formPoints);
+    });
 
-        $('.use-points-transaction').click(function(e) {
-            e.preventDefault();
-            var formPoints = $('.usePoints input').val();
-            usePoints(formPoints);
-        });
+    $('.use-points-transaction').click(function(e) {
+        e.preventDefault();
+        var formPoints = $('.usePoints input').val();
+        usePoints(formPoints);
+    });
 
     function usePoints(formPoints) {
         var accountNumber = JSON.parse(localStorage.getItem('accountNumber'));
@@ -559,7 +597,6 @@ $(document).ready(function() {
                     return;
                 } else {
                     updateMember();
-                    alert('Transaction successful');
                     var pointsElement = document.querySelector('.heading h2:nth-child(3)');
                     var currentPoints = parseInt(pointsElement.innerHTML);
                     var redeemedPoints = parseInt(formPoints);
@@ -568,10 +605,13 @@ $(document).ready(function() {
                     $('.use-partner select').val('');
                     $('.usePoints input').val('');
                     $('.redeemloyalty').html('');
-                    let loader = document.querySelector('.loader');
-                    console.log(loader);
-                    loader.style.display = 'block';
                     addTransactionCard(transactionData);
+                    Swal.fire({
+                        icon:'success',
+                        title:'Points Redeemed Successfully',
+                        showConfirmButton:false,
+                        timer:2000
+                    });
                 }
             },
             error: function(jqXHR, textStatus, errorThrown){
@@ -592,4 +632,3 @@ $(document).ready(function() {
         });
     };
 });
-

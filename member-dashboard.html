@@ -13,20 +13,28 @@
 <link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.min.css">
 <link rel="stylesheet" href="assets/vendor/jquery-steps/jquery.steps.css">
 
-<!-- MAIN CSS -->
+<link rel="stylesheet" href="../assets/vendor/sweetalert/sweetalert.css"/>
+
 <link rel="stylesheet" href="components/assets/css/main.css">
 <link rel="stylesheet" href="components/assets/css/color_skins.css">
 <style>
     .transaction-history-card{
-        position:fixed;
+        position:sticky;
         right:0;
-        top:10%;
-        height:90%;
+        width:99%;
+        bottom:0;
         z-index:10;
+        height:20px;
+        margin:30px auto;
     }
+
+    .transaction-history-card .row{
+        flex-wrap: nowrap;
+    }
+
     .profile-header{
-        background:rgba(187, 187, 186, 0.5);
-        height:90%;
+        background: linear-gradient(90deg, rgba(214, 217, 184, 0.233) 0%, rgba(216, 207, 44, 0.521) 35%);
+        height:fit-content;
         margin:auto 0;
         margin-top:20px;
         box-shadow:20px 20px 20px rgba(243, 243, 241, 0.5) ;
@@ -41,7 +49,7 @@
     }
     .profile-header .body{
         padding:0;
-        padding-top:20px;
+        padding-top: 20px;
     }
     .card{
         text-wrap:nowrap;
@@ -53,10 +61,11 @@
         cursor:pointer;
         background: rgba(255, 255, 237, 0.432);
         border-radius:10px;
+        border:1px solid rgba(73, 73, 73, 0.322);
     }
     .transaction-history-card .card,
     .transaction-history-card .profile-header{
-        padding:20px;
+        padding:10px 15px;
     }
     .profile-header .row{
         margin:0 auto;
@@ -69,8 +78,9 @@
     }
     .card-wrapper{
         width:100%;
-        background: rgba(187, 187, 186, 0.26);
+        background: linear-gradient(90deg, rgba(214, 217, 184, 0.233) 0%, rgba(232, 221, 9, 0.521) 35%);
         box-shadow:20px 20px 20px rgba(243, 243, 241, 0.5) ;
+        border:1px solid rgba(128, 128, 128, 0.445);
         border-radius:10px;
         padding-top:20px;
         backdrop-filter:blur(15px);
@@ -87,13 +97,20 @@
         position:relative;
         animation: cardAnimation 2s 0.1s ;
     }
+    .card{
+        margin:0;
+    }
+    .transaction-card{
+        margin-right:10px;
+        margin-left:10px;
+    }
     @keyframes cardAnimation{
         0%{
-            right:100%;
+            left:100%;
             opacity:0;
         }
         100%{
-            right:0;
+            left:0;
             opacity: 1;
         }
     }
@@ -201,7 +218,7 @@
                         <div class="header">
                             <h3>Purchase and Earn</h3>
                         </div>
-                        <div class="body">
+                        <div class="body partner-body">
                             <form id="basic-form" method="post" novalidate>
                                 <div class="form-group col-5 earnPartnerId">
                                     <label>Choose Partner to Purchase</label>
@@ -221,16 +238,18 @@
                                     <label>Earn 1 point for Every 1$ Spent:</label>
                                     <input type="text" class="form-control" required>
                                 </div>
-                                <button  class="btn btn-warning m-l-10 col-2 earn-points-transaction">Purchase and Earn</button>
+                                <button  class="btn btn-warning m-l-10 col-2 earn-points-transaction js-sweetalert" data-type="autoclose-timer">Purchase and Earn</button>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-2 transaction-history-card">
+        
+
+        <div class="col-lg-12 transaction-history-card">
             <div class="card profile-header">
-                <div class="body">
+                <div class="body row">
                     <!-- <div class="row clearfix w_social3">
                         <div class="">
                             <div class="card instagram-widget">
@@ -247,9 +266,10 @@
                 </div>
             </div>
         </div>
+    
         <div class="container-fluid">
             <div class="row clealfix">
-                <div class=" history-detail col-md-7">
+                <div class=" history-detail col-md-8">
                     <div class="card card-wrapper">
                         <div class="header">
                             <h2>Points Detail</h2>
@@ -268,14 +288,25 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-lg-12"></div>
+    
     </div>
 </div>
+
+<footer>
+    
+</footer>
+
 
 <script src="components/assets/bundles/libscripts.bundle.js"></script>
 <script src="components/assets/bundles/vendorscripts.bundle.js"></script>
 
 <script src="assets/vendor/jquery-validation/jquery.validate.js"></script>
 <script src="assets/vendor/jquery-steps/jquery.steps.js"></script>
+
+<script src="../assets/vendor/sweetalert/sweetalert.min.js"></script> 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script src="components/assets/bundles/mainscripts.bundle.js"></script>
 
